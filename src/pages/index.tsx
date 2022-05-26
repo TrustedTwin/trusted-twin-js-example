@@ -4,6 +4,7 @@ import {
   ConnectToApiForm,
   TrustedTwinApi,
 } from "../components/ConnectToApiForm";
+import { TwinsApiPanel } from "../components/TwinsApiPanel";
 
 const Index = () => {
   const [apiClient, setApiClient] = useState<TrustedTwinApi | undefined>(
@@ -17,22 +18,14 @@ const Index = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      {!apiConnection ? (
-        <ConnectToApiForm
-          apiClient={apiClient}
-          setApiClient={setApiClient}
-          apiConnection={apiConnection}
-          setApiConnection={setApiConnection}
-        />
-      ) : (
-        <p className="m-3 text-green-600 ">
-          Connected to the Trusted Twin API server ✅
-        </p>
-      )}
+      <ConnectToApiForm
+        apiClient={apiClient}
+        setApiClient={setApiClient}
+        apiConnection={apiConnection}
+        setApiConnection={setApiConnection}
+      />
 
-      {apiClient && apiConnection ? (
-        <div className="flex flex-col gap-3 m-3">{"make requests"}</div>
-      ) : null}
+      <TwinsApiPanel TwinsApi={apiClient?.twinApi} />
 
       <footer className="text-center text-black bg-white mt-auto">
         © Copyright {new Date().getFullYear()}{" "}

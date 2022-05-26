@@ -61,48 +61,56 @@ export function ConnectToApiForm({
       apiClient && apiConnection === false,
   });
 
-  return (
-    <form
-      className="m-3 max-w-screen-sm"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApiClient(CreateApiClient(event.currentTarget.apiKey.value));
-      }}
-    >
-      <label htmlFor="apiKey" className="inline-block mb-2">
-        {apiClient && apiConnection
-          ? null
-          : "To send requests enter your Trusted Twin rest API key"}
-      </label>
-      <div className="flex gap-2 flex-wrap items-start">
-        <div className="flex-grow">
-          <input
-            type="text"
-            name="apiKey"
-            ref={inputEl}
-            className={`w-full form-control px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none ${contitionalInputClasses}`}
-            id="apiKey"
-          />
-          {apiClient && apiConnection === false ? (
-            <label
-              htmlFor="apiKey"
-              className="block mb-2 text-sm text-red-600 "
+  if (apiConnection) {
+    return (
+      <p className="m-3 text-green-400 ">
+        Connected to the Trusted Twin API server ✅
+      </p>
+    );
+  } else {
+    return (
+      <form
+        className="m-3 max-w-screen-sm"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setApiClient(CreateApiClient(event.currentTarget.apiKey.value));
+        }}
+      >
+        <label htmlFor="apiKey" className="inline-block mb-2">
+          {apiClient && apiConnection
+            ? null
+            : "To send requests enter your Trusted Twin rest API key"}
+        </label>
+        <div className="flex gap-2 flex-wrap items-start">
+          <div className="flex-grow">
+            <input
+              type="text"
+              name="apiKey"
+              ref={inputEl}
+              className={`w-full form-control px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none ${contitionalInputClasses}`}
+              id="apiKey"
+            />
+            {apiClient && apiConnection === false ? (
+              <label
+                htmlFor="apiKey"
+                className="block mb-2 text-sm text-red-600 "
+              >
+                Couldn't connect to the Trusted Twin API server
+              </label>
+            ) : null}
+          </div>
+          {apiClient !== undefined && apiConnection === undefined ? (
+            <Spinner />
+          ) : (
+            <button
+              type="submit"
+              className="text-black hover:text-white bg-primary-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center"
             >
-              Couldn't connect to the Trusted Twin API server
-            </label>
-          ) : null}
+              submit
+            </button>
+          )}
         </div>
-        {apiClient !== undefined && apiConnection === undefined ? (
-          <Spinner />
-        ) : (
-          <button
-            type="submit"
-            className="text-black hover:text-white bg-primary-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center"
-          >
-            submit
-          </button>
-        )}
-      </div>
-    </form>
-  );
+      </form>
+    );
+  }
 }

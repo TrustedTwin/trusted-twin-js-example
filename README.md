@@ -23,7 +23,7 @@ import {
   Configuration,
   ConfigurationParameters,
   TwinsApi,
-} from '@trustedtwin/js-client';
+} from "@trustedtwin/js-client";
 
 const configParams: ConfigurationParameters = {
   basePath: process.env.API_PATH,
@@ -38,9 +38,11 @@ export const apiClient = {
 export type ApiClient = typeof apiClient;
 ```
 
-> :warning: **Remember to not publicly deploy the app with your api key**: this example app is meant to be used locally!
+> :warning: **don't publish app with your api key in the source code or enter it on untrusted websites**
 
-### License
+## Credits
+
+Created by [@mcalus3](https://github.com/mcalus3/) for [Trusted Twin](https://trustedtwin.com/)
 
 Licensed under the MIT License, Copyright © 2022
 
