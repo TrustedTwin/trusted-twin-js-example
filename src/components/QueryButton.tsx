@@ -13,7 +13,7 @@ export const QueryButton: React.FC<Props> = ({
       className="text-gray-700 bg-primary-500 cursor-not-allowed font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center whitespace-nowrap"
       disabled
     >
-      <Spinner className="w-4 h-4" />
+      <Spinner size="w-4 h-4" />
       request in progress...
     </button>
   ) : (

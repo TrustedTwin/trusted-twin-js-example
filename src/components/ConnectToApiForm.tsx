@@ -6,6 +6,7 @@ import {
   LogApi,
   ConfigurationParameters,
   Configuration,
+  IdentitiesApi,
 } from "@trustedtwin/js-client";
 
 type Props = {
@@ -15,7 +16,11 @@ type Props = {
   setApiConnection: Dispatch<SetStateAction<boolean | undefined>>;
 };
 
-export type TrustedTwinApi = { twinApi: TwinsApi; logApi: LogApi };
+export type TrustedTwinApi = {
+  twinsApi: TwinsApi;
+  logApi: LogApi;
+  identitiesApi: IdentitiesApi;
+};
 
 export const CreateApiClient = (apiKey: string) => {
   const configParams: ConfigurationParameters = {
@@ -25,8 +30,9 @@ export const CreateApiClient = (apiKey: string) => {
   const apiConfig = new Configuration(configParams);
 
   const api: TrustedTwinApi = {
-    twinApi: new TwinsApi(apiConfig),
+    twinsApi: new TwinsApi(apiConfig),
     logApi: new LogApi(apiConfig),
+    identitiesApi: new IdentitiesApi(apiConfig),
   };
   return api;
 };
@@ -63,14 +69,14 @@ export function ConnectToApiForm({
 
   if (apiConnection) {
     return (
-      <p className="m-3 text-green-400 ">
+      <p className="text-green-400 ">
         Connected to the Trusted Twin API server ✅
       </p>
     );
   } else {
     return (
       <form
-        className="m-3 max-w-screen-sm"
+        className="max-w-screen-sm"
         onSubmit={(event) => {
           event.preventDefault();
           setApiClient(CreateApiClient(event.currentTarget.apiKey.value));
