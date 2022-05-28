@@ -6,6 +6,7 @@ import {
 } from "../components/ConnectToApiForm";
 import { TwinsApiPanel } from "../components/TwinsApiPanel";
 import { LogApiPanel } from "../components/LogApiPanel";
+import { GithubLink } from "./GithubLink";
 
 const Index = () => {
   const [apiClient, setApiClient] = useState<TrustedTwinApi | undefined>(
@@ -34,6 +35,7 @@ const Index = () => {
         © Copyright {new Date().getFullYear()}{" "}
         <a href="https://trustedtwin.com/">Trusted Twin</a>
       </footer>
+      <GithubLink />
     </div>
   );
 };
