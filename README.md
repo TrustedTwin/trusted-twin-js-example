@@ -10,13 +10,13 @@ cd TrustedTwin-js-example
 npm install
 ```
 
-then creating a `.env` file by copying the `.env.example` and entering your Trusted Twin api key in the API_KEY variable.
-
-run `npm run dev`, navigate in your browser to `localhost:3000` and you should be able to make requests to the trustetTwin server.
+run `npm run dev`, navigate in your browser to `localhost:3000` and after providing your api key you should be able to make requests to the trustetTwin server.
 
 ## @trustedtwin/js-client usage
 
-This example app shows how to use the @trustedtwin/js-client package. First, you have to create object with configuration:
+@trustedtwin/js-client library can be used in the browser or node.js environment. It has a Promise-based methods that wrap individual REST API endpoint calls.
+
+This example app shows how to use the @trustedtwin/js-client package in the web app. First, you have to create object with configuration and initialise api service object for the API module you will be using:
 
 ```tsx
 import {
@@ -25,18 +25,35 @@ import {
   TwinsApi,
 } from "@trustedtwin/js-client";
 
-const configParams: ConfigurationParameters = {
-  basePath: process.env.API_PATH,
-  apiKey: process.env.API_KEY,
-};
-const apiConfig = new Configuration(configParams);
+export const CreateApiClient = (apiKey: string) => {
+  const configParams: ConfigurationParameters = {
+    basePath: "/api", // if you use client  proxy to bypass CORS on the rest server
+    apiKey,
+  };
+  const apiConfig = new Configuration(configParams);
 
-export const apiClient = {
-  twinApi: new TwinsApi(apiConfig),
-};
-
-export type ApiClient = typeof apiClient;
+  return new TwinsApi(apiConfig);
 ```
+
+then uou can use the servce object to make requests. If you are only interested in the data returned by the endpoint, use regular api methods:
+
+```tsx
+[...]
+const twinAlive = await twinsApi.createTwin();
+setTwinId(twinAlive?.creationCertificate?.uuid);
+[...]
+```
+
+or use the methods with the 'Raw' suffix if you want to read the response metadata:
+
+```tsx
+[...]
+const response = await twinsApi.createTwinRaw();
+const {headers, ok, redirected, status, statusText, type, url} = response.raw;
+[...]
+```
+
+List of REST API endpoints id available at the TrustedTwin docs: [https://docs.trustedtwin.com/reference/twin.html](https://docs.trustedtwin.com/reference/twin.html)
 
 > :warning: **don't publish app with your api key in the source code or enter it on untrusted websites**
 
