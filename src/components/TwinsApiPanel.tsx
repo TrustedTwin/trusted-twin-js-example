@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { TrustedTwinApi } from "./ConnectToApiForm";
+import { DocsApiSubPanel } from "./DocsApiSubPanel";
+import { IdentitiesApiSubPanel } from "./IdentitiesApiSubPanel";
+import { LedgerApiSubPanel } from "./LedgerApiSubPanel";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
@@ -94,10 +97,12 @@ export const TwinsApiPanel = ({ apiClient }: Props) => {
             </div>
           </li>
         ))}
-        {/* <IdentitiesApiSubPanel
+        <IdentitiesApiSubPanel
           identitiesApi={apiClient?.identitiesApi}
           twinId={twinId}
-        /> */}
+        />
+        <LedgerApiSubPanel ledgerApi={apiClient?.ledgerApi} twinId={twinId} />
+        <DocsApiSubPanel docsApi={apiClient?.docsApi} twinId={twinId} />
       </ul>
     </Panel>
   );

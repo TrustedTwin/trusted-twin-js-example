@@ -7,6 +7,10 @@ import {
 import { TwinsApiPanel } from "../components/TwinsApiPanel";
 import { LogApiPanel } from "../components/LogApiPanel";
 import { GithubLink } from "./GithubLink";
+import { TimeseriesApiPanel } from "../components/TimeseriesApiPanel";
+import { AccountApiPanel } from "../components/AccountApiPanel ";
+import { UsersApiPanel } from "../components/UsersApiPanel";
+import { RolesApiPanel } from "../components/RolesApiPanel ";
 
 const Index = () => {
   const [apiClient, setApiClient] = useState<TrustedTwinApi | undefined>(
@@ -29,13 +33,27 @@ const Index = () => {
 
         <TwinsApiPanel apiClient={apiConnection ? apiClient : undefined} />
 
+        <UsersApiPanel apiClient={apiConnection ? apiClient : undefined} />
+
+        <AccountApiPanel
+          accountApi={apiConnection ? apiClient?.accountApi : undefined}
+        />
+
+        <RolesApiPanel
+          rolesApi={apiConnection ? apiClient?.rolesApi : undefined}
+        />
+
+        <TimeseriesApiPanel
+          timeseriesApi={apiConnection ? apiClient?.timeseriesApi : undefined}
+        />
+
         <LogApiPanel logApi={apiConnection ? apiClient?.logApi : undefined} />
       </div>
+      <GithubLink />
       <footer className="text-center text-black bg-white mt-auto">
         © Copyright {new Date().getFullYear()}{" "}
         <a href="https://trustedtwin.com/">Trusted Twin</a>
       </footer>
-      <GithubLink />
     </div>
   );
 };

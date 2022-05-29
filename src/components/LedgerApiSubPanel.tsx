@@ -1,32 +1,43 @@
-import { IdentitiesApi } from "@trustedtwin/js-client";
+import { LedgerApi } from "@trustedtwin/js-client";
 import { useState } from "react";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
 type Props = {
-  identitiesApi: IdentitiesApi | undefined;
+  ledgerApi: LedgerApi | undefined;
   twinId: string | undefined;
 };
 
-export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
-  const [identity, setIdentity] = useState<string | undefined>(undefined);
+export const LedgerApiSubPanel = ({ ledgerApi, twinId }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const endpoints = [
     {
-      name: "createTwinIdentity",
+      name: "addTwinLedgerEntry",
       method: "POST",
-      path: "/twins/{twin}/identities",
+      path: "/twins/{twin}/ledgers/personal",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await identitiesApi?.createTwinIdentity({
+          const identities = await ledgerApi?.addTwinLedgerEntry({
             twin: twinId || "",
-            //@ts-ignore
-            postTwinIdentities: { identities: { additionalProperties: {} } },
+            ledger: "personal",
+            postLedgerEntries: {
+              entries: {
+                key1: {
+                  value: "123",
+                },
+                key2: {
+                  reference: {
+                    source:
+                      "twin://77f57a6e-1026-4272-8301-2a4419f32daa/e834214a-e13d-412b-ffd6-911ab58c8733/foreign_key",
+                    status: "ok",
+                  },
+                },
+              },
+            },
           });
           setLoading(false);
-          setIdentity(identities ? identities[0] : undefined);
           alert(JSON.stringify(identities, null, 2));
         } catch (e) {
           alert("error: " + JSON.stringify(e, null, 2));
@@ -35,14 +46,29 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
       },
     },
     {
-      name: "getTwinIdentities",
-      method: "GET",
-      path: "/twins/{twin}/identities",
+      name: "updateTwinLedgerEntry",
+      method: "PATCH",
+      path: "/twins/{twin}/ledgers/{ledger}",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await identitiesApi?.getTwinIdentities({
+          const identities = await ledgerApi?.updateTwinLedgerEntry({
             twin: twinId || "",
+            ledger: "personal",
+            patchUserLedger: {
+              entries: {
+                key1: {
+                  value: "123",
+                },
+                key2: {
+                  reference: {
+                    source:
+                      "twin://77f57a6e-1026-4272-8301-2a4419f32daa/e834214a-e13d-412b-ffd6-911ab58c8733/foreign_key",
+                    status: "ok",
+                  },
+                },
+              },
+            },
           });
           setLoading(false);
           alert(JSON.stringify(identities, null, 2));
@@ -56,21 +82,13 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
 
   return (
     <Panel
-      title="Identities API"
-      link="https://docs.trustedtwin.com/reference/identity.html"
+      title="Ledger API"
+      link="https://docs.trustedtwin.com/reference/ledger.html"
       disabled={!twinId}
     >
       <ul role="list" className="divide-y divide-gray-200">
         {endpoints.map((endpoint) => (
           <li className="py-3 sm:py-4" key={endpoint.name}>
-            {endpoint.name === "getTwinItentity" ? (
-              <p className=" mb-2 text-sm text-gray-300 text-ellipsis whitespace-nowrap overflow-hidden">
-                Identity uuid:{" "}
-                <span className="italic text-ellipsis">
-                  {identity || "not created"}
-                </span>
-              </p>
-            ) : null}
             <div className="flex items-center space-x-4">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{endpoint.name}</p>

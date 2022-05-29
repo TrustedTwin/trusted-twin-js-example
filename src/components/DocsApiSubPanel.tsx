@@ -1,33 +1,27 @@
-import { IdentitiesApi } from "@trustedtwin/js-client";
+import { DocsApi } from "@trustedtwin/js-client";
 import { useState } from "react";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
 type Props = {
-  identitiesApi: IdentitiesApi | undefined;
+  docsApi: DocsApi | undefined;
   twinId: string | undefined;
 };
 
-export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
-  const [identity, setIdentity] = useState<string | undefined>(undefined);
+export const DocsApiSubPanel = ({ docsApi, twinId }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const endpoints = [
     {
-      name: "createTwinIdentity",
+      name: "createUploadURL",
       method: "POST",
-      path: "/twins/{twin}/identities",
+      path: "/cache",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await identitiesApi?.createTwinIdentity({
-            twin: twinId || "",
-            //@ts-ignore
-            postTwinIdentities: { identities: { additionalProperties: {} } },
-          });
+          const response = await docsApi?.createUploadURL();
           setLoading(false);
-          setIdentity(identities ? identities[0] : undefined);
-          alert(JSON.stringify(identities, null, 2));
+          alert(JSON.stringify(response, null, 2));
         } catch (e) {
           alert("error: " + JSON.stringify(e, null, 2));
           setLoading(false);
@@ -35,14 +29,15 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
       },
     },
     {
-      name: "getTwinIdentities",
+      name: "getTwinDoc",
       method: "GET",
-      path: "/twins/{twin}/identities",
+      path: "/twins/{twin}/docs/{doc_name}",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await identitiesApi?.getTwinIdentities({
+          const identities = await docsApi?.getTwinDoc({
             twin: twinId || "",
+            docName: "docName",
           });
           setLoading(false);
           alert(JSON.stringify(identities, null, 2));
@@ -56,21 +51,13 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
 
   return (
     <Panel
-      title="Identities API"
-      link="https://docs.trustedtwin.com/reference/identity.html"
+      title="Docs API"
+      link="https://docs.trustedtwin.com/reference/doc.html"
       disabled={!twinId}
     >
       <ul role="list" className="divide-y divide-gray-200">
         {endpoints.map((endpoint) => (
           <li className="py-3 sm:py-4" key={endpoint.name}>
-            {endpoint.name === "getTwinItentity" ? (
-              <p className=" mb-2 text-sm text-gray-300 text-ellipsis whitespace-nowrap overflow-hidden">
-                Identity uuid:{" "}
-                <span className="italic text-ellipsis">
-                  {identity || "not created"}
-                </span>
-              </p>
-            ) : null}
             <div className="flex items-center space-x-4">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{endpoint.name}</p>

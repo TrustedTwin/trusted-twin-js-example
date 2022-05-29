@@ -7,6 +7,13 @@ import {
   ConfigurationParameters,
   Configuration,
   IdentitiesApi,
+  LedgerApi,
+  DocsApi,
+  AccountApi,
+  TimeseriesApi,
+  RolesApi,
+  UsersApi,
+  SecretsApi,
 } from "@trustedtwin/js-client";
 
 type Props = {
@@ -20,6 +27,13 @@ export type TrustedTwinApi = {
   twinsApi: TwinsApi;
   logApi: LogApi;
   identitiesApi: IdentitiesApi;
+  ledgerApi: LedgerApi;
+  docsApi: DocsApi;
+  accountApi: AccountApi;
+  timeseriesApi: TimeseriesApi;
+  rolesApi: RolesApi;
+  usersApi: UsersApi;
+  secretsApi: SecretsApi;
 };
 
 export const CreateApiClient = (apiKey: string) => {
@@ -33,6 +47,13 @@ export const CreateApiClient = (apiKey: string) => {
     twinsApi: new TwinsApi(apiConfig),
     logApi: new LogApi(apiConfig),
     identitiesApi: new IdentitiesApi(apiConfig),
+    ledgerApi: new LedgerApi(apiConfig),
+    docsApi: new DocsApi(apiConfig),
+    accountApi: new AccountApi(apiConfig),
+    rolesApi: new RolesApi(apiConfig),
+    secretsApi: new SecretsApi(apiConfig),
+    timeseriesApi: new TimeseriesApi(apiConfig),
+    usersApi: new UsersApi(apiConfig),
   };
   return api;
 };

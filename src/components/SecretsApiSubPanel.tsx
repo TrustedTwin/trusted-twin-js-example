@@ -1,33 +1,30 @@
-import { IdentitiesApi } from "@trustedtwin/js-client";
+import { SecretsApi } from "@trustedtwin/js-client";
 import { useState } from "react";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
 type Props = {
-  identitiesApi: IdentitiesApi | undefined;
-  twinId: string | undefined;
+  secretsApi: SecretsApi | undefined;
+  userId: string | undefined;
 };
 
-export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
-  const [identity, setIdentity] = useState<string | undefined>(undefined);
+export const SecretsApiSubPanel = ({ secretsApi, userId }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const endpoints = [
     {
-      name: "createTwinIdentity",
+      name: "createUserSecret",
       method: "POST",
-      path: "/twins/{twin}/identities",
+      path: "/users/{user}/secrets",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await identitiesApi?.createTwinIdentity({
-            twin: twinId || "",
-            //@ts-ignore
-            postTwinIdentities: { identities: { additionalProperties: {} } },
+          const response = await secretsApi?.createUserSecret({
+            account: userId || "",
+            pin: "testPin",
           });
           setLoading(false);
-          setIdentity(identities ? identities[0] : undefined);
-          alert(JSON.stringify(identities, null, 2));
+          alert(JSON.stringify(response, null, 2));
         } catch (e) {
           alert("error: " + JSON.stringify(e, null, 2));
           setLoading(false);
@@ -35,14 +32,14 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
       },
     },
     {
-      name: "getTwinIdentities",
+      name: "getUserSecret",
       method: "GET",
-      path: "/twins/{twin}/identities",
+      path: "/users/{user}/secrets",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await identitiesApi?.getTwinIdentities({
-            twin: twinId || "",
+          const identities = await secretsApi?.getUserSecret({
+            user: userId || "",
           });
           setLoading(false);
           alert(JSON.stringify(identities, null, 2));
@@ -56,21 +53,13 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
 
   return (
     <Panel
-      title="Identities API"
-      link="https://docs.trustedtwin.com/reference/identity.html"
-      disabled={!twinId}
+      title="Secrets API"
+      link="https://docs.trustedtwin.com/reference/doc.html"
+      disabled={!userId}
     >
       <ul role="list" className="divide-y divide-gray-200">
         {endpoints.map((endpoint) => (
           <li className="py-3 sm:py-4" key={endpoint.name}>
-            {endpoint.name === "getTwinItentity" ? (
-              <p className=" mb-2 text-sm text-gray-300 text-ellipsis whitespace-nowrap overflow-hidden">
-                Identity uuid:{" "}
-                <span className="italic text-ellipsis">
-                  {identity || "not created"}
-                </span>
-              </p>
-            ) : null}
             <div className="flex items-center space-x-4">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{endpoint.name}</p>
