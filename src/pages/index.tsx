@@ -10,6 +10,7 @@ import { GithubLink } from "../components/GithubLink";
 import { TimeseriesApiPanel } from "../components/TimeseriesApiPanel";
 import { UsersApiPanel } from "../components/UsersApiPanel";
 import { RolesApiPanel } from "../components/RolesApiPanel ";
+import { IndexesApiPanel } from "../components/IndexesApiPanel";
 
 const Index = () => {
   const [apiClient, setApiClient] = useState<TrustedTwinApi | undefined>(
@@ -32,14 +33,18 @@ const Index = () => {
 
         <TwinsApiPanel apiClient={apiConnection ? apiClient : undefined} />
 
+        <TimeseriesApiPanel
+          timeseriesApi={apiConnection ? apiClient?.timeseriesApi : undefined}
+        />
+
+        <IndexesApiPanel
+          indexesApi={apiConnection ? apiClient?.indexesApi : undefined}
+        />
+
         <UsersApiPanel apiClient={apiConnection ? apiClient : undefined} />
 
         <RolesApiPanel
           rolesApi={apiConnection ? apiClient?.rolesApi : undefined}
-        />
-
-        <TimeseriesApiPanel
-          timeseriesApi={apiConnection ? apiClient?.timeseriesApi : undefined}
         />
 
         <LogApiPanel logApi={apiConnection ? apiClient?.logApi : undefined} />

@@ -9,6 +9,7 @@ type Props = { apiClient: TrustedTwinApi | undefined };
 
 export const UsersApiPanel = ({ apiClient }: Props) => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [accountId, setAccountId] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   const endpoints = [
@@ -27,6 +28,7 @@ export const UsersApiPanel = ({ apiClient }: Props) => {
           });
           setLoading(false);
           setUserId(user?.uuid);
+          setAccountId(user?.account);
           alert(JSON.stringify(user, null, 2));
         } catch (e) {
           await handleResponseError(e, setLoading);
@@ -100,6 +102,7 @@ export const UsersApiPanel = ({ apiClient }: Props) => {
         <SecretsApiSubPanel
           secretsApi={apiClient?.secretsApi}
           userId={userId}
+          accountId={accountId}
         />
       </ul>
     </Panel>

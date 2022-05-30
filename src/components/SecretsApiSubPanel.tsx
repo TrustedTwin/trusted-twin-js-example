@@ -7,9 +7,14 @@ import { QueryButton } from "./QueryButton";
 type Props = {
   secretsApi: SecretsApi | undefined;
   userId: string | undefined;
+  accountId: string | undefined;
 };
 
-export const SecretsApiSubPanel = ({ secretsApi, userId }: Props) => {
+export const SecretsApiSubPanel = ({
+  secretsApi,
+  userId,
+  accountId,
+}: Props) => {
   const [loading, setLoading] = useState(false);
   const [pin, setPin] = useState<string | undefined>(undefined);
 
@@ -40,7 +45,7 @@ export const SecretsApiSubPanel = ({ secretsApi, userId }: Props) => {
         setLoading(true);
         try {
           const identities = await secretsApi?.createUserSecret({
-            account: userId || "",
+            account: accountId || "",
             pin: pin || "",
           });
           setLoading(false);

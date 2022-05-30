@@ -14,6 +14,7 @@ import {
   RolesApi,
   UsersApi,
   SecretsApi,
+  IndexesApi,
 } from "@trustedtwin/js-client";
 
 type Props = {
@@ -34,6 +35,7 @@ export type TrustedTwinApi = {
   rolesApi: RolesApi;
   usersApi: UsersApi;
   secretsApi: SecretsApi;
+  indexesApi: IndexesApi;
 };
 
 export const CreateApiClient = (apiKey: string) => {
@@ -54,6 +56,7 @@ export const CreateApiClient = (apiKey: string) => {
     secretsApi: new SecretsApi(apiConfig),
     timeseriesApi: new TimeseriesApi(apiConfig),
     usersApi: new UsersApi(apiConfig),
+    indexesApi: new IndexesApi(apiConfig),
   };
   return api;
 };

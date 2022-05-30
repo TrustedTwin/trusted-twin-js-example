@@ -10,8 +10,9 @@ type Props = {
 };
 
 export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
-  const [identity, setIdentity] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+
+  const identityId = "RFID#ae144bdc-0f6d-4a00-4091-1a6d793aaaa";
 
   const endpoints = [
     {
@@ -23,13 +24,18 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
         try {
           const identities = await identitiesApi?.createTwinIdentity({
             twin: twinId || "",
-            //@ts-ignore
             postTwinIdentities: {
-              identities: {},
+              identities: {
+                [identityId]: {
+                  validityTs: 1678270994.0,
+                  visibility:
+                    "USER.profession == 'accounting' or USER.profession == 'sales'",
+                },
+              },
             },
           });
           setLoading(false);
-          setIdentity(identities ? identities[0] : undefined);
+          //@ts-ignore
           alert(JSON.stringify(identities, null, 2));
         } catch (e) {
           await handleResponseError(e, setLoading);
@@ -45,7 +51,7 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
         try {
           const identities = await identitiesApi?.getTwinIdentity({
             twin: twinId || "",
-            identity: identity || "",
+            identity: identityId,
           });
           setLoading(false);
           alert(JSON.stringify(identities, null, 2));
@@ -82,12 +88,10 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
       <ul role="list" className="divide-y divide-gray-200">
         {endpoints.map((endpoint) => (
           <li className="py-3 sm:py-4" key={endpoint.name}>
-            {endpoint.name === "getTwinItentity" ? (
+            {endpoint.name === "getTwinIdentity" ? (
               <p className=" mb-2 text-sm text-gray-300 text-ellipsis whitespace-nowrap overflow-hidden">
-                Identity uuid:{" "}
-                <span className="italic text-ellipsis">
-                  {identity || "not created"}
-                </span>
+                Identity name:{" "}
+                <span className="italic text-ellipsis">{identityId}</span>
               </p>
             ) : null}
             <div className="flex items-center space-x-4">
