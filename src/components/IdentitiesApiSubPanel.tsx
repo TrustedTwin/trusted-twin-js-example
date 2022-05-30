@@ -1,5 +1,6 @@
 import { IdentitiesApi } from "@trustedtwin/js-client";
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
@@ -23,14 +24,33 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
           const identities = await identitiesApi?.createTwinIdentity({
             twin: twinId || "",
             //@ts-ignore
-            postTwinIdentities: { identities: { additionalProperties: {} } },
+            postTwinIdentities: {
+              identities: {},
+            },
           });
           setLoading(false);
           setIdentity(identities ? identities[0] : undefined);
           alert(JSON.stringify(identities, null, 2));
         } catch (e) {
-          alert("error: " + JSON.stringify(e, null, 2));
+          await handleResponseError(e, setLoading);
+        }
+      },
+    },
+    {
+      name: "getTwinIdentity",
+      method: "GET",
+      path: "/twins/{twin}/identities/{identity}",
+      queryFn: async () => {
+        setLoading(true);
+        try {
+          const identities = await identitiesApi?.getTwinIdentity({
+            twin: twinId || "",
+            identity: identity || "",
+          });
           setLoading(false);
+          alert(JSON.stringify(identities, null, 2));
+        } catch (e) {
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -47,8 +67,7 @@ export const IdentitiesApiSubPanel = ({ identitiesApi, twinId }: Props) => {
           setLoading(false);
           alert(JSON.stringify(identities, null, 2));
         } catch (e) {
-          alert("error: " + JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },

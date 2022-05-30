@@ -6,9 +6,8 @@ import {
 } from "../components/ConnectToApiForm";
 import { TwinsApiPanel } from "../components/TwinsApiPanel";
 import { LogApiPanel } from "../components/LogApiPanel";
-import { GithubLink } from "./GithubLink";
+import { GithubLink } from "../components/GithubLink";
 import { TimeseriesApiPanel } from "../components/TimeseriesApiPanel";
-import { AccountApiPanel } from "../components/AccountApiPanel ";
 import { UsersApiPanel } from "../components/UsersApiPanel";
 import { RolesApiPanel } from "../components/RolesApiPanel ";
 
@@ -34,10 +33,6 @@ const Index = () => {
         <TwinsApiPanel apiClient={apiConnection ? apiClient : undefined} />
 
         <UsersApiPanel apiClient={apiConnection ? apiClient : undefined} />
-
-        <AccountApiPanel
-          accountApi={apiConnection ? apiClient?.accountApi : undefined}
-        />
 
         <RolesApiPanel
           rolesApi={apiConnection ? apiClient?.rolesApi : undefined}

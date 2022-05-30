@@ -1,5 +1,6 @@
 import { LogApi } from "@trustedtwin/js-client";
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
@@ -20,8 +21,7 @@ export const LogApiPanel = ({ logApi }: Props) => {
           setLoading(false);
           alert(JSON.stringify(log, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },

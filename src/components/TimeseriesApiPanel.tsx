@@ -1,11 +1,13 @@
 import { TimeseriesApi } from "@trustedtwin/js-client";
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
 type Props = { timeseriesApi: TimeseriesApi | undefined };
 
 export const TimeseriesApiPanel = ({ timeseriesApi }: Props) => {
+  const [table, setTable] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   const endpoints = [
@@ -16,10 +18,12 @@ export const TimeseriesApiPanel = ({ timeseriesApi }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
+          const id = "timeseries" + makeid(5);
+          setTable(id);
           const log = await timeseriesApi?.createTimeseriesTable({
             timeseriesTables: {
               timeseries: {
-                additionalProp1: {
+                [id]: {
                   dimensions: {
                     names: ["jtd2ev2j_lz6ojpe5sclx42hiqipgzu5ar"],
                     types: ["int"],
@@ -35,8 +39,7 @@ export const TimeseriesApiPanel = ({ timeseriesApi }: Props) => {
           setLoading(false);
           alert(JSON.stringify(log, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -47,12 +50,28 @@ export const TimeseriesApiPanel = ({ timeseriesApi }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
-          const log = await timeseriesApi?.getTimeseriesTables();
+          const table = await timeseriesApi?.getTimeseriesTables();
+          setLoading(false);
+          alert(JSON.stringify(table, null, 2));
+        } catch (e) {
+          await handleResponseError(e, setLoading);
+        }
+      },
+    },
+    {
+      name: "updateTimeseriesTable",
+      method: "PATCH",
+      path: "/account/services/timeseries",
+      queryFn: async () => {
+        setLoading(true);
+        try {
+          const log = await timeseriesApi?.updateTimeseriesTable({
+            timeseries: table || "",
+          });
           setLoading(false);
           alert(JSON.stringify(log, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -84,3 +103,13 @@ export const TimeseriesApiPanel = ({ timeseriesApi }: Props) => {
     </Panel>
   );
 };
+
+function makeid(length: number) {
+  var result = "";
+  var characters = "abcdefghijklmnopqrstuvwxyz";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}

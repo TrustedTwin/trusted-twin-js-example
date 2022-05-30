@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { TrustedTwinApi } from "./ConnectToApiForm";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
@@ -19,14 +20,16 @@ export const UsersApiPanel = ({ apiClient }: Props) => {
         setLoading(true);
         try {
           const user = await apiClient?.usersApi.createUser({
-            postNewUser: { role: "NewRole", name: "testName" },
+            postNewUser: {
+              role: "a639b00e-51c6-4b2b-a400-ddead965a2cb",
+              name: "testName",
+            },
           });
           setLoading(false);
           setUserId(user?.uuid);
           alert(JSON.stringify(user, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -41,8 +44,24 @@ export const UsersApiPanel = ({ apiClient }: Props) => {
           setLoading(false);
           alert(JSON.stringify(log, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
+          await handleResponseError(e, setLoading);
+        }
+      },
+    },
+    {
+      name: "createUserSecretPIN",
+      method: "POST",
+      path: "/users/{user}/secrets",
+      queryFn: async () => {
+        setLoading(true);
+        try {
+          const response = await apiClient?.usersApi.createUserSecretPIN({
+            user: userId || "",
+          });
           setLoading(false);
+          alert(JSON.stringify(response, null, 2));
+        } catch (e) {
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -59,7 +78,7 @@ export const UsersApiPanel = ({ apiClient }: Props) => {
           <li className="py-3 sm:py-4" key={endpoint.name}>
             {endpoint.name === "getUser" ? (
               <p className=" mb-2 text-sm text-gray-300 text-ellipsis whitespace-nowrap overflow-hidden">
-                Twin uuid:{" "}
+                User uuid:{" "}
                 <span className="italic text-ellipsis">
                   {userId || "not created"}
                 </span>

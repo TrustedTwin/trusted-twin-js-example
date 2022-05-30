@@ -1,11 +1,13 @@
 import { RolesApi } from "@trustedtwin/js-client";
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
 type Props = { rolesApi: RolesApi | undefined };
 
 export const RolesApiPanel = ({ rolesApi }: Props) => {
+  const [role, setRole] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   const endpoints = [
@@ -16,17 +18,60 @@ export const RolesApiPanel = ({ rolesApi }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
-          const log = await rolesApi?.createUserRole({
+          const role = await rolesApi?.createUserRole({
             postNewRole: { name: "newRoleName2" },
           });
+          setRole(role?.uuid);
           setLoading(false);
-          alert(JSON.stringify(log, null, 2));
+          alert(JSON.stringify(role, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
+    {
+      name: "getUserRole",
+      method: "GET",
+      path: "/roles/{role}",
+      queryFn: async () => {
+        setLoading(true);
+        try {
+          const response = await rolesApi?.getUserRole({ role: role || "" });
+          setLoading(false);
+          alert(JSON.stringify(response, null, 2));
+        } catch (e) {
+          await handleResponseError(e, setLoading);
+        }
+      },
+    },
+    // {
+    //   name: "updateUserRole",
+    //   method: "PATCH",
+    //   path: "/roles/{role}",
+    //   queryFn: async () => {
+    //     setLoading(true);
+    //     try {
+    //       const response = await rolesApi?.updateUserRole({
+    //         role: role || "",
+    //         updateRole: {
+    //           name: "role_1",
+    //           statement: {
+    //             effect: "allow",
+    //             actions: ["createTwin", "getTwin", "getTwinIdentities"],
+    //           },
+    //           rules: {
+    //             twinRule: "string",
+    //             entryRule: "string",
+    //           },
+    //         },
+    //       });
+    //       setLoading(false);
+    //       alert(JSON.stringify(response, null, 2));
+    //     } catch (e) {
+    //       await handleResponseError(e, setLoading);
+    //     }
+    //   },
+    // },
     {
       name: "getUserRoles",
       method: "GET",
@@ -34,12 +79,11 @@ export const RolesApiPanel = ({ rolesApi }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
-          const log = await rolesApi?.getUserRoles();
+          const roles = await rolesApi?.getUserRoles();
           setLoading(false);
-          alert(JSON.stringify(log, null, 2));
+          alert(JSON.stringify(roles, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -47,8 +91,8 @@ export const RolesApiPanel = ({ rolesApi }: Props) => {
 
   return (
     <Panel
-      title="Roles API"
-      link="https://docs.trustedtwin.com/reference/log.html"
+      title="Roles/Account API"
+      link="https://docs.trustedtwin.com/reference/role.html"
       disabled={!rolesApi}
     >
       <ul role="list" className="divide-y divide-gray-200">

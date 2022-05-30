@@ -1,5 +1,6 @@
 import { DocsApi } from "@trustedtwin/js-client";
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
@@ -23,27 +24,41 @@ export const DocsApiSubPanel = ({ docsApi, twinId }: Props) => {
           setLoading(false);
           alert(JSON.stringify(response, null, 2));
         } catch (e) {
-          alert("error: " + JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
     {
-      name: "getTwinDoc",
+      name: "getTwinDocs",
       method: "GET",
-      path: "/twins/{twin}/docs/{doc_name}",
+      path: "/twins/{twin}/docs",
       queryFn: async () => {
         setLoading(true);
         try {
-          const identities = await docsApi?.getTwinDoc({
+          const response = await docsApi?.getTwinDocs({
             twin: twinId || "",
-            docName: "docName",
           });
           setLoading(false);
-          alert(JSON.stringify(identities, null, 2));
+          alert(JSON.stringify(await response, null, 2));
         } catch (e) {
-          alert("error: " + JSON.stringify(e, null, 2));
+          await handleResponseError(e, setLoading);
+        }
+      },
+    },
+    {
+      name: "deleteTwinDocs",
+      method: "GET",
+      path: "/twins/{twin}/docs",
+      queryFn: async () => {
+        setLoading(true);
+        try {
+          const response = await docsApi?.deleteTwinDocs({
+            twin: twinId || "",
+          });
           setLoading(false);
+          alert(JSON.stringify(await response, null, 2));
+        } catch (e) {
+          await handleResponseError(e, setLoading);
         }
       },
     },

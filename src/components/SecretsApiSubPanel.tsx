@@ -1,5 +1,6 @@
 import { SecretsApi } from "@trustedtwin/js-client";
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { Panel } from "./Panel";
 import { QueryButton } from "./QueryButton";
 
@@ -10,31 +11,49 @@ type Props = {
 
 export const SecretsApiSubPanel = ({ secretsApi, userId }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [pin, setPin] = useState<string | undefined>(undefined);
 
   const endpoints = [
     {
-      name: "createUserSecret",
+      name: "createUserSecretPIN",
       method: "POST",
       path: "/users/{user}/secrets",
       queryFn: async () => {
         setLoading(true);
         try {
-          const response = await secretsApi?.createUserSecret({
-            account: userId || "",
-            pin: "testPin",
+          const response = await secretsApi?.createUserSecretPIN({
+            user: userId || "",
           });
           setLoading(false);
+          setPin(response?.pin);
           alert(JSON.stringify(response, null, 2));
         } catch (e) {
-          alert("error: " + JSON.stringify(e, null, 2));
+          await handleResponseError(e, setLoading);
+        }
+      },
+    },
+    {
+      name: "createUserSecret",
+      method: "POST",
+      path: "/secrets/{accounr}/{pin}",
+      queryFn: async () => {
+        setLoading(true);
+        try {
+          const identities = await secretsApi?.createUserSecret({
+            account: userId || "",
+            pin: pin || "",
+          });
           setLoading(false);
+          alert(JSON.stringify(identities, null, 2));
+        } catch (e: any) {
+          await handleResponseError(e, setLoading);
         }
       },
     },
     {
       name: "getUserSecret",
       method: "GET",
-      path: "/users/{user}/secrets",
+      path: "/secrets/{accounr}/{pin}",
       queryFn: async () => {
         setLoading(true);
         try {
@@ -43,9 +62,8 @@ export const SecretsApiSubPanel = ({ secretsApi, userId }: Props) => {
           });
           setLoading(false);
           alert(JSON.stringify(identities, null, 2));
-        } catch (e) {
-          alert("error: " + JSON.stringify(e, null, 2));
-          setLoading(false);
+        } catch (e: any) {
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -54,7 +72,7 @@ export const SecretsApiSubPanel = ({ secretsApi, userId }: Props) => {
   return (
     <Panel
       title="Secrets API"
-      link="https://docs.trustedtwin.com/reference/doc.html"
+      link="https://docs.trustedtwin.com/reference/user-authentication.html"
       disabled={!userId}
     >
       <ul role="list" className="divide-y divide-gray-200">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { handleResponseError } from "../utils/handleResponseError";
 import { TrustedTwinApi } from "./ConnectToApiForm";
 import { DocsApiSubPanel } from "./DocsApiSubPanel";
 import { IdentitiesApiSubPanel } from "./IdentitiesApiSubPanel";
@@ -26,8 +27,7 @@ export const TwinsApiPanel = ({ apiClient }: Props) => {
           setTwinId(twinAlive?.creationCertificate?.uuid);
           alert(JSON.stringify(twinAlive, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -42,8 +42,7 @@ export const TwinsApiPanel = ({ apiClient }: Props) => {
           setLoading(false);
           alert(JSON.stringify(twin, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
@@ -60,8 +59,7 @@ export const TwinsApiPanel = ({ apiClient }: Props) => {
           setLoading(false);
           alert(JSON.stringify(terminationCertificate, null, 2));
         } catch (e) {
-          alert(JSON.stringify(e, null, 2));
-          setLoading(false);
+          await handleResponseError(e, setLoading);
         }
       },
     },
