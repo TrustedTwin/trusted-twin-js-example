@@ -29,6 +29,11 @@ export const CreateApiClient = (apiKey: string) => {
   const configParams: ConfigurationParameters = {
     basePath: "/api", // if you use client  proxy to bypass CORS on the rest server
     apiKey,
+    headers: {
+      "X-TrustedTwin":
+        "your-x-trustedTwin-header",
+      Authorization: apiKey,
+    },
   };
   const apiConfig = new Configuration(configParams);
 

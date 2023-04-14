@@ -26,7 +26,7 @@ export const SecretsApiSubPanel = ({
       queryFn: async () => {
         setLoading(true);
         try {
-          const response = await secretsApi?.createUserSecretPIN({
+          const response = await secretsApi?.createUserSecretPin({
             user: userId || "",
           });
           setLoading(false);

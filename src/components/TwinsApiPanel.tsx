@@ -22,7 +22,9 @@ export const TwinsApiPanel = ({ apiClient }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
-          const twinAlive = await twinsApi?.createTwin();
+          const twinAlive = await twinsApi?.createTwin({
+            description: { description: { key1: "testDescription" } },
+          });
           setLoading(false);
           setTwinId(twinAlive?.creationCertificate?.uuid);
           alert(JSON.stringify(twinAlive, null, 2));

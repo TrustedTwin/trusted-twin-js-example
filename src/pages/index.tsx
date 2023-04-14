@@ -11,6 +11,7 @@ import { TimeseriesApiPanel } from "../components/TimeseriesApiPanel";
 import { UsersApiPanel } from "../components/UsersApiPanel";
 import { RolesApiPanel } from "../components/RolesApiPanel ";
 import { IndexesApiPanel } from "../components/IndexesApiPanel";
+import { TokenApiPanel } from "../components/TokenApiPanel";
 
 const Index = () => {
   const [apiClient, setApiClient] = useState<TrustedTwinApi | undefined>(
@@ -48,6 +49,9 @@ const Index = () => {
         />
 
         <LogApiPanel logApi={apiConnection ? apiClient?.logApi : undefined} />
+        <TokenApiPanel
+          tokenApi={apiConnection ? apiClient?.tokenApi : undefined}
+        />
       </div>
       <GithubLink />
       <footer className="text-center text-black bg-white mt-auto">

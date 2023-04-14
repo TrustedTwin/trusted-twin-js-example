@@ -57,7 +57,7 @@ export const UsersApiPanel = ({ apiClient }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
-          const response = await apiClient?.usersApi.createUserSecretPIN({
+          const response = await apiClient?.usersApi.createUserSecretPin({
             user: userId || "",
           });
           setLoading(false);

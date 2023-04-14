@@ -20,7 +20,7 @@ export const DocsApiSubPanel = ({ docsApi, twinId }: Props) => {
       queryFn: async () => {
         setLoading(true);
         try {
-          const response = await docsApi?.createUploadURL();
+          const response = await docsApi?.createUploadUrl();
           setLoading(false);
           alert(JSON.stringify(response, null, 2));
         } catch (e) {

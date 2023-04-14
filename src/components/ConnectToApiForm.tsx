@@ -15,6 +15,7 @@ import {
   UsersApi,
   SecretsApi,
   IndexesApi,
+  TokenApi,
 } from "@trustedtwin/js-client";
 
 type Props = {
@@ -36,12 +37,18 @@ export type TrustedTwinApi = {
   usersApi: UsersApi;
   secretsApi: SecretsApi;
   indexesApi: IndexesApi;
+  tokenApi: TokenApi;
 };
 
 export const CreateApiClient = (apiKey: string) => {
   const configParams: ConfigurationParameters = {
-    basePath: "/api", // in tailwind.config.js file there is a rewrite that defines proxy to bypass CORS on the rest server
+    basePath: "/api", // in next.config.js file there is a rewrite that defines proxy to bypass CORS on the rest server
     apiKey,
+    headers: {
+      "X-TrustedTwin":
+        "eyJzZXJpYWwiOiAiYjBmNTMxYzMtOTE0Yi00NDA4LTk4OTUtYjYxZjU5YzA2YjY2In0=",
+      Authorization: apiKey,
+    },
   };
   const apiConfig = new Configuration(configParams);
 
@@ -57,6 +64,7 @@ export const CreateApiClient = (apiKey: string) => {
     timeseriesApi: new TimeseriesApi(apiConfig),
     usersApi: new UsersApi(apiConfig),
     indexesApi: new IndexesApi(apiConfig),
+    tokenApi: new TokenApi(apiConfig),
   };
   return api;
 };
